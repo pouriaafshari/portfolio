@@ -4,26 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>✧ poori's site ✧</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* Reset & Base */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #cfe8c9;
-      background-image: 
-        linear-gradient(to right, #7a9c77 1px, transparent 1px),
-        linear-gradient(to bottom, #7a9c77 1px, transparent 1px);
+      font-family: 'Quicksand', sans-serif;
+      background-color: #c9d7e8;
+      background-image:
+        linear-gradient(to right, #77839c 1px, transparent 1px),
+        linear-gradient(to bottom, #77839c 1px, transparent 1px);
       background-size: 40px 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
       padding: 20px;
+    }
+
+    .page {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      min-height: 100vh;
+    }
+
+    .page.active {
+      display: flex;
+      opacity: 1;
+      justify-content: center;
+      align-items: center;
     }
 
     .card {
@@ -42,19 +54,22 @@
       border-radius: 50%;
       object-fit: cover;
       margin-bottom: 20px;
-      border: 3px solid #818d5f;
+      border: 3px solid #5f6f8d;
+      background: #e8eff7;
     }
 
     h1 {
       font-size: 1.8em;
       margin-bottom: 10px;
-      color: #818d5f;
+      color: #5f6f8d;
+      font-weight: 700;
     }
 
     p {
       font-size: 1em;
       margin-bottom: 30px;
-      color: #818d5f;
+      color: #5f6f8d;
+      font-weight: 600;
     }
 
     .links {
@@ -64,24 +79,254 @@
     }
 
     .links a {
-      display: block;
-      padding: 10px 20px;
-      border: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border: 2px solid #5f6f8d;
       border-radius: 20px;
       text-decoration: none;
-      color: #333;
+      color: #5f6f8d;
       background-color: #f7f7f7;
       transition: all 0.3s ease;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     .links a:hover {
-      background-color: #333;
+      background-color: #5f6f8d;
       color: #fff;
-      border-color: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(95, 111, 141, 0.3);
     }
 
-    @media (max-width: 500px) {
-      .card {
+    .links a i {
+      font-size: 1.2em;
+    }
+
+    /* Portfolio Page */
+    .portfolio-container {
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 1000px;
+      width: 100%;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: 2px solid #5f6f8d;
+      border-radius: 20px;
+      background-color: #f7f7f7;
+      color: #5f6f8d;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background-color: #5f6f8d;
+      color: #fff;
+    }
+
+    .page-title {
+      font-size: 2em;
+      color: #5f6f8d;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .gallery-item {
+      aspect-ratio: 1;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+      background: linear-gradient(135deg, #e8eff7 0%, #c9d7e8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #5f6f8d;
+      font-size: 3em;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.05);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    /* Lightbox Styles */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 40px;
+      color: white;
+      background: rgba(95, 111, 141, 0.8);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox-close:hover {
+      background: #5f6f8d;
+      transform: rotate(90deg);
+    }
+
+    /* Commission Page */
+    .commission-container {
+      background: white;
+      border-radius: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 40px 30px;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .commission-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 20px;
+    }
+
+    .commission-text {
+      color: #5f6f8d;
+    }
+
+    .commission-text h2 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .commission-text h3 {
+      font-size: 1.2em;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .commission-text p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .commission-text ul {
+      list-style-position: inside;
+      margin-bottom: 15px;
+    }
+
+    .commission-text li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .price-tag {
+      display: inline-block;
+      background: #5f6f8d;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    .commission-images {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .commission-example {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background: linear-gradient(135deg, #e8eff7 0%, #c9d7e8 100%);
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .commission-example i {
+      font-size: 3em;
+      color: #5f6f8d;
+      margin-bottom: 10px;
+    }
+
+    .commission-example p {
+      color: #5f6f8d;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .commission-content {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+
+      .card, .portfolio-container, .commission-container {
         padding: 30px 20px;
       }
 
@@ -93,19 +338,195 @@
       h1 {
         font-size: 1.5em;
       }
+
+      .page-title {
+        font-size: 1.5em;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <img src="pfp.png" alt="Your Logo" class="logo" />
-    <h1>✧ hi, i'm poori! ✧</h1>
-    <p>FREELANCE ILLUSTRATOR & DEVELOPER</p>
-    <div class="links">
-      <a href="#">Instagram</a>
-      <a href="#">Commissions</a>
-      <a href="#">Portfolio</a>
+  <!-- Home Page -->
+  <div class="page active" id="home">
+    <div class="card">
+      <img src="pfp.png" alt="Poori's Logo" class="logo" />
+      <h1>✧ hi, i'm poori! ✧</h1>
+      <p>FREELANCE ILLUSTRATOR & DEVELOPER</p>
+      <div class="links">
+        <a href="https://reddit.com" target="_blank">
+          <i class="fab fa-reddit"></i>
+          Reddit
+        </a>
+        <a onclick="showPage('commissions')">
+          <i class="fas fa-palette"></i>
+          Commissions
+        </a>
+        <a onclick="showPage('portfolio')">
+          <i class="fas fa-images"></i>
+          Portfolio
+        </a>
+      </div>
     </div>
   </div>
+
+  <!-- Portfolio Page -->
+  <div class="page" id="portfolio">
+    <div class="portfolio-container">
+      <a class="back-button" onclick="showPage('home')">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+      <h2 class="page-title">✧ My Portfolio ✧</h2>
+      <div class="gallery" id="galleryGrid">
+        <!-- Gallery items will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox for full-screen image view -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">×</button>
+    <img class="lightbox-content" id="lightboxImg" onclick="event.stopPropagation()">
+  </div>
+
+  <!-- Commissions Page -->
+  <div class="page" id="commissions">
+    <div class="commission-container">
+      <a class="back-button" onclick="showPage('home')">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+      <h2 class="page-title">✧ Commission Info ✧</h2>
+      <div class="commission-content">
+        <div class="commission-text">
+          <h2>Welcome to my commissions!</h2>
+          <p>Thank you for your interest in commissioning me! I love bringing characters and ideas to life through my art. Please read through the information below before placing an order.</p>
+          
+          <h3><i class="fas fa-paint-brush"></i> What I Offer:</h3>
+          <ul>
+            <li><strong>Character Illustrations</strong> - Full body, half body, or portrait</li>
+            <li><strong>Character Design</strong> - Original character creation</li>
+            <li><strong>Fan Art</strong> - Your favorite characters reimagined</li>
+            <li><strong>Emotes & Icons</strong> - Perfect for Discord and Twitch</li>
+          </ul>
+
+          <h3><i class="fas fa-dollar-sign"></i> Pricing:</h3>
+          <p><strong>Sketch:</strong> <span class="price-tag">$25</span></p>
+          <p><strong>Flat Color:</strong> <span class="price-tag">$50</span></p>
+          <p><strong>Full Render:</strong> <span class="price-tag">$100</span></p>
+          <p><em>Prices may vary based on complexity. Additional characters +50%</em></p>
+
+          <h3><i class="fas fa-clock"></i> Turnaround Time:</h3>
+          <p>2-4 weeks depending on complexity and current queue. Rush orders available for an additional fee!</p>
+
+          <h3><i class="fas fa-envelope"></i> How to Order:</h3>
+          <p>Send me a message with your commission details, references, and any specific requests. I'll get back to you within 24-48 hours!</p>
+        </div>
+
+        <div class="commission-images">
+          <div class="commission-example">
+            <i class="fas fa-pencil-alt"></i>
+            <p><strong>Sketch Style</strong></p>
+            <p>Clean linework with basic shading</p>
+          </div>
+          <div class="commission-example">
+            <i class="fas fa-fill-drip"></i>
+            <p><strong>Flat Color</strong></p>
+            <p>Full color with cell shading</p>
+          </div>
+          <div class="commission-example">
+            <i class="fas fa-star"></i>
+            <p><strong>Full Render</strong></p>
+            <p>Detailed shading & lighting</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== ADD YOUR IMAGE FILENAMES HERE =====
+    // Just add the filename of each image in your portfolio folder
+    const portfolioImages = [
+      'Mimistory.jpg', 
+      'eve smile.png', 
+      'Samp 1.png',
+      'Type 2.png', 
+      'VN2.jpg', 
+      'Mimi Goth.jpg',
+      'Mimi Himekaji.jpg', 
+      'Mimi Undies.jpg', 
+      'MimiChibi.jpg',
+      'MimiKawa 2.png', 
+      'This.jpg', 
+      'eve back clothed.webp',
+      'eve front bikini.webp', 
+      'eve front clothed.webp', 
+      'Untitled.png',
+      'MimiKawa 4.png', 
+      'eve heart naked.webp', 
+      'rat.jpg'
+    ];
+    // =========================================
+
+    function showPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => {
+        page.classList.remove('active');
+      });
+      
+      setTimeout(() => {
+        document.getElementById(pageId).classList.add('active');
+      }, 100);
+
+      if (pageId === 'portfolio') {
+        loadGallery();
+      }
+    }
+
+    function loadGallery() {
+      const gallery = document.getElementById('galleryGrid');
+      gallery.innerHTML = '';
+
+      portfolioImages.forEach((image, index) => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        
+        // Try to load actual image, fallback to icon
+        const img = document.createElement('img');
+        img.src = `portfolio/${image}`;
+        img.alt = `Artwork ${index + 1}`;
+        img.onclick = function() {
+          openLightbox(this.src);
+        };
+        img.onerror = function() {
+          this.style.display = 'none';
+          item.innerHTML = '<i class="fas fa-image"></i>';
+        };
+        
+        item.appendChild(img);
+        gallery.appendChild(item);
+      });
+    }
+
+    function openLightbox(imageSrc) {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      lightboxImg.src = imageSrc;
+      lightbox.classList.add('active');
+    }
+
+    function closeLightbox() {
+      const lightbox = document.getElementById('lightbox');
+      lightbox.classList.remove('active');
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    });
+  </script>
 </body>
 </html>
